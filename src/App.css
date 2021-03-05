@@ -1,38 +1,77 @@
 .App {
+  width: 100%;
+  min-height: -webkit-fill-available;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
   text-align: center;
 }
 
-.App-logo {
-  height: 40vmin;
-  pointer-events: none;
+header {
+  /* border: solid 1px white; */
+  font-family: 'Monoton', cursive;
+  font-size: 25px;
+  margin-bottom: 1%;
 }
 
-@media (prefers-reduced-motion: no-preference) {
-  .App-logo {
-    animation: App-logo-spin infinite 20s linear;
-  }
-}
-
-.App-header {
-  background-color: #282c34;
-  min-height: 100vh;
+#chat-container {
+  flex: 1;
   display: flex;
   flex-direction: column;
-  align-items: center;
   justify-content: center;
-  font-size: calc(10px + 2vmin);
+  align-items: center;
+  margin-top: 1%;
+  padding-top: 1%;
+  padding-bottom: 1%;
+}
+
+.chat-component {
+  flex: 1;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+}
+
+#welcome-btns {
+  flex-grow: 1;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+}
+
+#welcome-text p {
+  margin-bottom: 1%;
+}
+
+#welcome-button {
+  min-width: 75vw;
+  padding: 3%;
+  border-radius: 10px;
+  border: solid 1.5px white;
+  margin-bottom: 6%;
+}
+
+a {
+  font-size: 30pt;
+  text-decoration: none;
   color: white;
 }
 
-.App-link {
-  color: #61dafb;
+a:visited {
+  text-decoration: none;
+  color: white;
 }
 
-@keyframes App-logo-spin {
-  from {
-    transform: rotate(0deg);
+/* @media only screen and (min-width: 600px) {
+  .video-js {
+    min-width: 640px;
+    min-height: 360px;
   }
-  to {
-    transform: rotate(360deg);
+  #chat-container {
+    width: 400px;
   }
-}
+} */
