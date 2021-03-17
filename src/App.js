@@ -43,6 +43,10 @@ function App() {
     navigator.userAgent.includes('Chrome') ||
     navigator.userAgent.includes('Firefox')
   ) {
+    document.documentElement.style.setProperty(
+      '--vh',
+      `${window.innerHeight / 100}px`
+    );
     appMinHeight = 'calc(var(--vh, 1vh) * 100)';
   }
 
