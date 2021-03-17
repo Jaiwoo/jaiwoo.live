@@ -51,7 +51,7 @@ function App() {
     return (
       <div className='App' style={{ minHeight: appMinHeight }}>
         <header>Jaiwoo.Live</header>
-        <Video />
+        <VideoContainer />
         <Chat />
       </div>
     );
@@ -84,16 +84,25 @@ function App() {
   }
 }
 
-function Video() {
+function VideoContainer() {
+  return (
+    <div id='video-container'>
+      <VideoJS />
+    </div>
+  );
+}
+
+function VideoJS() {
   const { vjsId, vjsRef, vjsClassName } = useVideojs({
     src: 'https://d8g9rqwtz0vk3.cloudfront.net/stream/index.m3u8',
     type: 'application/x-mpegURL',
     controls: true,
     autoplay: true,
     playsinline: true,
-    responsive: true,
-    aspectRatio: '16:9',
+    fluid: true,
     bigPlayButtonCentered: true,
+    height: 'auto',
+    width: 'auto',
   });
   return (
     <div data-vjs-player>
@@ -115,7 +124,7 @@ function Welcome() {
   return (
     <div id='welcome' className='chat-component'>
       <div id='welcome-text'>
-        <p style={{ fontSize: '20px' }}>Welcome!</p>
+        <p>Welcome!</p>
         <p>Hit ▶️ to start the party! 🔊</p>
         <p>Sign in below to participate in the live chat 🤪</p>
         <p>Or join as guest to follow along 🙃</p>
@@ -133,7 +142,7 @@ function Welcome() {
 
 function WelcomeButton(props) {
   const text = props.text;
-  return <div id='welcome-button'>{text}</div>;
+  return <div class='welcome-button'>{text}</div>;
 }
 
 // Exports
