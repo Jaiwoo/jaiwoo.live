@@ -29,7 +29,10 @@
     <div id="root"></div>
   </body>
   <script>
-    if (navigator.userAgent.includes('Chrome' || 'Firefox')) {
+    if (
+      navigator.userAgent.includes('Chrome') ||
+      navigator.userAgent.includes('Firefox')
+    ) {
       document.documentElement.style.setProperty(
         '--vh',
         `${window.innerHeight / 100}px`
@@ -37,8 +40,6 @@
       document.querySelector('body').style.minHeight =
         'calc(var(--vh, 1vh) * 100)';
       document.querySelector('#root').style.minHeight =
-        'calc(var(--vh, 1vh) * 100)';
-      document.querySelector('.App').style.minHeight =
         'calc(var(--vh, 1vh) * 100)';
     }
   </script>

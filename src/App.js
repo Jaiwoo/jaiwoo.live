@@ -37,40 +37,51 @@ function App() {
       setIsLive(doc.data().isLive);
     });
 
+  // SET APP FULL SCREEN HEIGHT
+  let appMinHeight = '-webkit-fill-available';
+  if (
+    navigator.userAgent.includes('Chrome') ||
+    navigator.userAgent.includes('Firefox')
+  ) {
+    appMinHeight = 'calc(var(--vh, 1vh) * 100)';
+  }
+
+  // ONLINE MODE
   if (isLive) {
     return (
-      <div className='App'>
+      <div className='App' style={{ minHeight: appMinHeight }}>
         <header>Jaiwoo.Live</header>
         <Video />
         <Chat />
       </div>
     );
-  } else if (isLive === false) {
-    return <Offline />;
-  } else if (isLive == null) {
-    return <div className='App'></div>;
   }
-}
+  // OFFLINE MODE
+  else if (isLive === false) {
+    return (
+      <div className='App' style={{ minHeight: appMinHeight }}>
+        <header>Jaiwoo.Live</header>
+        <p>We're curently offline 😏</p>
+        <br />
+        <p>@djaiwoo for updates 👇🏼</p>
+        <a
+          style={{ marginTop: '2%' }}
+          aria-label='a link to my instagram page'
+          href='https://www.instagram.com/djaiwoo/'
+          className='insta-button-container'
+          target='_blank'
+          rel='noreferrer'
+        >
+          <i id='instagram-btn' className='fab fa-instagram insta-button'></i>
+        </a>
+      </div>
+    );
+  }
 
-function Offline() {
-  return (
-    <div className='App'>
-      <header>Jaiwoo.Live</header>
-      <p>We're curently offline 😏</p>
-      <br />
-      <p>@djaiwoo for updates 👇🏼</p>
-      <a
-        style={{ marginTop: '2%' }}
-        aria-label='a link to my instagram page'
-        href='https://www.instagram.com/djaiwoo/'
-        className='insta-button-container'
-        target='_blank'
-        rel='noreferrer'
-      >
-        <i id='instagram-btn' className='fab fa-instagram insta-button'></i>
-      </a>
-    </div>
-  );
+  // NULL STATE
+  else if (isLive == null) {
+    return <div className='App' style={{ minHeight: appMinHeight }}></div>;
+  }
 }
 
 function Video() {
