@@ -1,12 +1,7 @@
 // Imports
-import React, {
-  useRef,
-  useState,
-  useEffect,
-  useContext,
-  useImperativeHandle,
-} from 'react';
+import React, { useRef, useState, useEffect, useContext } from 'react';
 import { useVideojs } from 'react-videojs-hook';
+import { useFormik } from 'formik';
 import 'video.js/dist/video-js.css';
 
 // Styles
@@ -175,80 +170,142 @@ function Authenticate() {
 
   // WELCOME PAGE
   if (authPage === 'welcome') {
-    return (
-      <div id='welcome' className='interactive-component'>
-        <div id='welcome-text'>
-          <p>Welcome!</p>
-          <p>Hit ▶️ to start the party! 🔊</p>
-          <p>Sign in below to participate in the live chat 🤪</p>
-          <p>Or join as guest to follow along 🙃</p>
-          <p>Thanks for hangin' out! 🙏🏼</p>
-        </div>
-        <div id='welcome-btns'>
-          <div
-            id='create-account-btn'
-            className='welcome-button'
-            onClick={() => {
-              setAuthPage('create');
-            }}
-          >
-            Create Account
-          </div>
-          <div
-            id='sign-in-btn'
-            className='welcome-button'
-            onClick={() => {
-              setAuthPage('sign-in');
-            }}
-          >
-            Sign In
-          </div>
-          <div
-            id='join-as-guest-btn'
-            className='welcome-button'
-            onClick={() => {
-              auth.signInAnonymously();
-            }}
-          >
-            Join as Guest
-          </div>
-        </div>
-        <footer id='welcome-foot'>Made with ❤️</footer>
-      </div>
-    );
+    return <Welcome setAuthPage={setAuthPage} />;
   }
 
   // CREATE ACCOUNT PAGE
   else if (authPage === 'create') {
-    return (
-      <div id='create' className='interactive-component'>
-        <p>Create an account!</p>
-        <br></br>
-        <p
-          onClick={() => {
-            setAuthPage('welcome');
-          }}
-        >
-          GO BACK
-        </p>
-      </div>
-    );
+    return <CreateAccount setAuthPage={setAuthPage} />;
   }
 
   // SIGN IN PAGE
   else if (authPage === 'sign-in') {
-    return (
-      <div id='sign-in' className='interactive-component'>
-        <p>Sign in to your account!</p>
-        <br></br>
-        <p
+    return <SignIn setAuthPage={setAuthPage} />;
+  }
+}
+
+function Welcome(props) {
+  return (
+    <div id='welcome' className='interactive-component'>
+      <div id='welcome-text'>
+        <p>Welcome!</p>
+        <p>Hit ▶️ to start the party! 🔊</p>
+        <p>Sign in below to participate in the live chat 🤪</p>
+        <p>Or join as guest to follow along 🙃</p>
+        <p>Thanks for hangin' out! 🙏🏼</p>
+      </div>
+      <div id='auth-btns'>
+        <div
+          id='create-account-btn'
+          className='auth-button'
           onClick={() => {
-            setAuthPage('welcome');
+            props.setAuthPage('create');
           }}
         >
-          GO BACK
-        </p>
+          Create Account
+        </div>
+        <div
+          id='sign-in-btn'
+          className='auth-button'
+          onClick={() => {
+            props.setAuthPage('sign-in');
+          }}
+        >
+          Sign In
+        </div>
+        <div
+          id='join-as-guest-btn'
+          className='auth-button'
+          onClick={() => {
+            auth.signInAnonymously();
+          }}
+        >
+          Join as Guest
+        </div>
       </div>
-    );
-  }
+      <footer id='welcome-foot'>Made with ❤️</footer>
+    </div>
+  );
+}
+
+function CreateAccount(props) {
+  // FORMIK
+  const formik = useFormik({
+    initialValues: {
+      email: '',
+      password: '',
+    },
+  });
+
+  return (
+    <div id='create-account' className='interactive-component'>
+      <div id='create-account-text'>
+        <p>Create an account to participate in the live chat!</p>
+        <p>Enter an email and password to get started.</p>
+        <p>🙋🏼 🗣 💬</p>
+      </div>
+      <div id='create-account-form-container'>
+        <form
+          onSubmit={(e) => {
+            e.preventDefault();
+            console.log('create user');
+          }}
+        >
+          <label htmlFor='email' className='form-item form-label'>
+            Email
+          </label>
+          <input
+            type='email'
+            id='email'
+            className='form-item form-input'
+            name='email'
+            placeholder='name@example.com'
+            onChange={formik.handleChange}
+            value={formik.values.email}
+          />
+
+          <label htmlFor='password' className='form-item form-label'>
+            Password
+          </label>
+          <input
+            type='text'
+            id='password'
+            className='form-item form-input'
+            name='password'
+            placeholder='pass1234'
+            onChange={formik.handleChange}
+            value={formik.values.password}
+          />
+
+          <button type='submit' className='form-item form-button'>
+            Create Account
+          </button>
+          <button
+            className='form-item form-button'
+            onClick={() => {
+              props.setAuthPage('welcome');
+            }}
+          >
+            Cancel
+          </button>
+        </form>
+      </div>
+    </div>
+  );
+}
+
+function SignIn(props) {
+  return (
+    <div id='sign-in' className='interactive-component'>
+      <p>Sign in to your account!</p>
+      <br></br>
+      <p
+        onClick={() => {
+          props.setAuthPage('welcome');
+        }}
+      >
+        GO BACK
+      </p>
+    </div>
+  );
 }
