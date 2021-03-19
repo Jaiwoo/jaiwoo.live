@@ -98,7 +98,8 @@ function VideoContainer() {
 
 function VideoJS() {
   const { vjsId, vjsRef, vjsClassName } = useVideojs({
-    src: 'https://d8g9rqwtz0vk3.cloudfront.net/stream/index.m3u8',
+    src:
+      'https://74771800fd66.us-east-1.playback.live-video.net/api/video/v1/us-east-1.309644988325.channel.GGpWmcHRp4Mw.m3u8',
     type: 'application/x-mpegURL',
     controls: true,
     autoplay: true,
