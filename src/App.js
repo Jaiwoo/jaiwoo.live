@@ -271,7 +271,7 @@ function CreateAccount(props) {
             Password
           </label>
           <input
-            type='text'
+            type='password'
             id='password'
             className='form-item form-input'
             name='password'
@@ -336,7 +336,7 @@ function SignIn(props) {
             Password
           </label>
           <input
-            type='text'
+            type='password'
             id='password'
             className='form-item form-input'
             name='password'
