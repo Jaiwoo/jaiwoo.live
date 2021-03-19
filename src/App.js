@@ -190,7 +190,7 @@ function Welcome(props) {
       <div id='welcome-text'>
         <p>Welcome!</p>
         <p>Hit ▶️ to start the party! 🔊</p>
-        <p>Sign in below to participate in the live chat 🤪</p>
+        <p>Sign in below to participate in the live chat 💬</p>
         <p>Or join as guest to follow along 🙃</p>
         <p>Thanks for hangin' out! 🙏🏼</p>
       </div>
@@ -223,7 +223,9 @@ function Welcome(props) {
           Join as Guest
         </div>
       </div>
-      <footer id='welcome-foot'>Made with ❤️</footer>
+      <footer id='welcome-foot'>
+        Made with <i class='fab fa-react'></i> & <i class='far fa-heart'></i>
+      </footer>
     </div>
   );
 }
@@ -246,6 +248,7 @@ function CreateAccount(props) {
       </div>
       <div id='create-account-form-container'>
         <form
+          id='create-account-form'
           onSubmit={(e) => {
             e.preventDefault();
             console.log('create user');
@@ -295,17 +298,66 @@ function CreateAccount(props) {
 }
 
 function SignIn(props) {
+  // FORMIK
+  const formik = useFormik({
+    initialValues: {},
+  });
   return (
     <div id='sign-in' className='interactive-component'>
-      <p>Sign in to your account!</p>
-      <br></br>
-      <p
-        onClick={() => {
-          props.setAuthPage('welcome');
-        }}
-      >
-        GO BACK
-      </p>
+      <div id='sign-in-text'>
+        <p>
+          If you already have an account enter your email and password to sign
+          in
+        </p>
+        <p>🙋🏼 🗣 💬</p>
+      </div>
+      <div id='sign-in-form-container'>
+        <form
+          id='sign-in-form'
+          onSubmit={(e) => {
+            e.preventDefault();
+            console.log('sign in user');
+          }}
+        >
+          <label htmlFor='email' className='form-item form-label'>
+            Email
+          </label>
+          <input
+            type='email'
+            id='email'
+            className='form-item form-input'
+            name='email'
+            placeholder='name@example.com'
+            onChange={formik.handleChange}
+            value={formik.values.email}
+          />
+
+          <label htmlFor='password' className='form-item form-label'>
+            Password
+          </label>
+          <input
+            type='text'
+            id='password'
+            className='form-item form-input'
+            name='password'
+            placeholder='pass1234'
+            onChange={formik.handleChange}
+            value={formik.values.password}
+          />
+
+          <button type='submit' className='form-item form-button'>
+            Sign In
+          </button>
+          <button
+            className='form-item form-button'
+            onClick={() => {
+              props.setAuthPage('welcome');
+            }}
+          >
+            Cancel
+          </button>
+        </form>
+      </div>
     </div>
   );
 }
