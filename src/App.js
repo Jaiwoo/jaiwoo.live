@@ -1,5 +1,11 @@
 // Imports
-import React, { useRef, useState, useEffect } from 'react';
+import React, {
+  useRef,
+  useState,
+  useEffect,
+  useContext,
+  useImperativeHandle,
+} from 'react';
 import { useVideojs } from 'react-videojs-hook';
 import 'video.js/dist/video-js.css';
 
@@ -26,9 +32,22 @@ const firebaseConfig = {
 firebase.initializeApp(firebaseConfig);
 const auth = firebase.auth();
 
-// React App Component
+// UserContext
+const UserContext = React.createContext(null);
+const UserProvider = UserContext.Provider;
+
+//
+// ─── REACT APP COMPONENT ────────────────────────────────────────────────────────
+//
+
 function App() {
+  // CONNECT FIRESTORE DATABASE
   const firestore = firebase.firestore();
+
+  // FIRESTORE USER STATE
+  const [user] = useAuthState(auth);
+
+  // APP ISLIVE STATE
   let [isLive, setIsLive] = useState(null);
   firestore
     .collection('appState')
@@ -53,32 +72,36 @@ function App() {
   // ONLINE MODE
   if (isLive) {
     return (
-      <div className='App' style={{ minHeight: appMinHeight }}>
-        <header>Jaiwoo.Live</header>
-        <VideoContainer />
-        <Chat />
-      </div>
+      <UserProvider value={user}>
+        <div className='App' style={{ minHeight: appMinHeight }}>
+          <header>Jaiwoo.Live</header>
+          <VideoContainer />
+          <InteractiveContainer />
+        </div>
+      </UserProvider>
     );
   }
   // OFFLINE MODE
   else if (isLive === false) {
     return (
-      <div className='App' style={{ minHeight: appMinHeight }}>
-        <header>Jaiwoo.Live</header>
-        <p>We're curently offline 😏</p>
-        <br />
-        <p>@djaiwoo for updates 👇🏼</p>
-        <a
-          style={{ marginTop: '2%' }}
-          aria-label='a link to my instagram page'
-          href='https://www.instagram.com/djaiwoo/'
-          className='insta-button-container'
-          target='_blank'
-          rel='noreferrer'
-        >
-          <i id='instagram-btn' className='fab fa-instagram insta-button'></i>
-        </a>
-      </div>
+      <UserProvider value={user}>
+        <div className='App' style={{ minHeight: appMinHeight }}>
+          <header>Jaiwoo.Live</header>
+          <p>We're curently offline 😏</p>
+          <br />
+          <p>@djaiwoo for updates 👇🏼</p>
+          <a
+            style={{ marginTop: '2%' }}
+            aria-label='a link to my instagram page'
+            href='https://www.instagram.com/djaiwoo/'
+            className='insta-button-container'
+            target='_blank'
+            rel='noreferrer'
+          >
+            <i id='instagram-btn' className='fab fa-instagram insta-button'></i>
+          </a>
+        </div>
+      </UserProvider>
     );
   }
 
@@ -87,6 +110,11 @@ function App() {
     return <div className='App' style={{ minHeight: appMinHeight }}></div>;
   }
 }
+
+// Exports
+export default App;
+
+// ────────────────────────────────────────────────────────────────────────────────
 
 function VideoContainer() {
   return (
@@ -116,39 +144,111 @@ function VideoJS() {
   );
 }
 
-function Chat() {
-  const [user] = useAuthState(auth);
-  return (
-    <section id='chat-container'>
-      {user ? <p>Welcome User!</p> : <Welcome />}
-    </section>
-  );
-}
+function InteractiveContainer() {
+  const user = useContext(UserContext);
 
-function Welcome() {
   return (
-    <div id='welcome' className='chat-component'>
-      <div id='welcome-text'>
-        <p>Welcome!</p>
-        <p>Hit ▶️ to start the party! 🔊</p>
-        <p>Sign in below to participate in the live chat 🤪</p>
-        <p>Or join as guest to follow along 🙃</p>
-        <p>Thanks for hangin' out! 🙏🏼</p>
-      </div>
-      <div id='welcome-btns'>
-        <WelcomeButton text='Create Account' />
-        <WelcomeButton text='Sign In' />
-        <WelcomeButton text='Join as Guest' />
-      </div>
-      <div id='welcome-foot'>Made with ❤️</div>
+    <div id='interactive-container'>
+      {user ? <Chat user={user} /> : <Authenticate />}
     </div>
   );
 }
 
-function WelcomeButton(props) {
-  const text = props.text;
-  return <div class='welcome-button'>{text}</div>;
+function Chat(props) {
+  const user = props.user;
+  const handleSignOut = () => {
+    if (user.isAnonymous) {
+      auth.currentUser.delete();
+    }
+  };
+  return (
+    <div id='chat-container' className='interactive-component'>
+      <p>There is a user!</p>
+      <br></br>
+      <p onClick={handleSignOut}>SIGN OUT</p>
+    </div>
+  );
 }
 
-// Exports
-export default App;
+function Authenticate() {
+  const [authPage, setAuthPage] = useState('welcome');
+
+  // WELCOME PAGE
+  if (authPage === 'welcome') {
+    return (
+      <div id='welcome' className='interactive-component'>
+        <div id='welcome-text'>
+          <p>Welcome!</p>
+          <p>Hit ▶️ to start the party! 🔊</p>
+          <p>Sign in below to participate in the live chat 🤪</p>
+          <p>Or join as guest to follow along 🙃</p>
+          <p>Thanks for hangin' out! 🙏🏼</p>
+        </div>
+        <div id='welcome-btns'>
+          <div
+            id='create-account-btn'
+            className='welcome-button'
+            onClick={() => {
+              setAuthPage('create');
+            }}
+          >
+            Create Account
+          </div>
+          <div
+            id='sign-in-btn'
+            className='welcome-button'
+            onClick={() => {
+              setAuthPage('sign-in');
+            }}
+          >
+            Sign In
+          </div>
+          <div
+            id='join-as-guest-btn'
+            className='welcome-button'
+            onClick={() => {
+              auth.signInAnonymously();
+            }}
+          >
+            Join as Guest
+          </div>
+        </div>
+        <footer id='welcome-foot'>Made with ❤️</footer>
+      </div>
+    );
+  }
+
+  // CREATE ACCOUNT PAGE
+  else if (authPage === 'create') {
+    return (
+      <div id='create' className='interactive-component'>
+        <p>Create an account!</p>
+        <br></br>
+        <p
+          onClick={() => {
+            setAuthPage('welcome');
+          }}
+        >
+          GO BACK
+        </p>
+      </div>
+    );
+  }
+
+  // SIGN IN PAGE
+  else if (authPage === 'sign-in') {
+    return (
+      <div id='sign-in' className='interactive-component'>
+        <p>Sign in to your account!</p>
+        <br></br>
+        <p
+          onClick={() => {
+            setAuthPage('welcome');
+          }}
+        >
+          GO BACK
+        </p>
+      </div>
+    );
+  }
+}
