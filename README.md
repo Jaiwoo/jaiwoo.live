@@ -1,6 +1,6 @@
 # The home of Jaiwoo.Live
 
-[https://jaiwoodotlive.web.app]
+[https://jaiwoo.live]
 
 Work in Progress!
 
